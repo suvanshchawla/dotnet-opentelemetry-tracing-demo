@@ -1,0 +1,24 @@
+# The Collector is a pipeline: receivers -> processors -> exporters.
+# The app speaks only OTLP to the Collector; swapping backends later means editing THIS file, not the app.
+receivers:
+  otlp:
+    protocols:
+      grpc: { endpoint: 0.0.0.0:4317 }
+
+processors:
+  batch: {}
+
+exporters:
+  otlp/jaeger:                 # traces -> Jaeger (which accepts OTLP natively)
+    endpoint: jaeger:4317
+    tls: { insecure: true }
+  prometheus:                  # metrics -> exposed on :8889 for Prometheus to scrape
+    endpoint: 0.0.0.0:8889
+  debug:                       # logs -> the Collector's own stdout (no log backend in this demo)
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:  { receivers: [otlp], processors: [batch], exporters: [otlp/jaeger] }
+    metrics: { receivers: [otlp], processors: [batch], exporters: [prometheus] }
+    logs:    { receivers: [otlp], processors: [batch], exporters: [debug] }

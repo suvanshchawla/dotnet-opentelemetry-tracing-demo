@@ -1,0 +1,9 @@
+### no index
+0
+/listings/search/slow  n=50  min=537.8ms  median=583.5ms  p95=628.8ms  max=649.2ms
+/listings/search  n=50  min=17.4ms  median=19.9ms  p95=25.1ms  max=31.6ms
+CREATE INDEX
+ANALYZE
+### with index
+/listings/search/slow  n=50  min=29.7ms  median=40.3ms  p95=47.0ms  max=55.3ms
+/listings/search  n=50  min=4.6ms  median=5.5ms  p95=7.3ms  max=8.2ms

@@ -124,3 +124,7 @@ scripts/bench.sh    timing helper
   `docker compose up --build` once on your own machine to confirm. Likewise the GitHub Actions workflow
   has not been executed yet (the same commands run locally and pass).
 * Benchmark numbers are single-machine, single-run, synthetic data.
+
+## License
+
+[MIT](LICENSE)

@@ -51,7 +51,7 @@ Metrics are exported every 60 s by default, so wait about a minute before they a
 Endpoints: `GET /listings/{id}`, `POST /listings/{id}/bids`, `GET /listings/search` (fixed),
 `GET /listings/search/slow` (deliberately slow), `GET /listings/{id}/shipping` (calls the service itself over HTTP).
 
-Tests: `dotnet test` (11 tests; the integration tests need Docker and start PostgreSQL via Testcontainers).
+Tests: `dotnet test` (12 tests; the integration tests need Docker and start PostgreSQL via Testcontainers, including a concurrent-bids test).
 
 ## What each signal is for
 

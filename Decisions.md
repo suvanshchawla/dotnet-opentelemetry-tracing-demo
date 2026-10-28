@@ -2,10 +2,6 @@
 
 Each entry: the decision, the reason, and the trade-off.
 
-## Scope and domain
-* **Listings and bids.** Matches the interviewer's domain (vehicle auctions) without being a copy of anything real. Small enough to read in one sitting.
-* **Small on purpose.** The goal is a truthful, explainable claim ("I instrumented a .NET service and found a bottleneck with a trace"), not breadth.
-
 ## Application
 * **.NET 8 minimal API.** Current LTS-era target for the job's stack; the fewest files, so the OpenTelemetry wiring is easy to find in `Program.cs`.
 * **Npgsql + Dapper, plain SQL.** The SQL text is exactly what appears in the trace, which makes the diagnosis visible. An ORM would hide the N+1 behind LINQ and add concepts to learn. Trade-off: hand-written SQL.

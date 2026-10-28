@@ -29,7 +29,7 @@ flowchart LR
 Requirements: Docker with Compose, and (for tests / local dev) the .NET 8 SDK.
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build --wait   # --wait returns once the api and database report healthy
 curl localhost:8080/listings/1
 curl "localhost:8080/listings/search?category=cars&limit=5"
 curl -XPOST localhost:8080/listings/1/bids -H 'content-type: application/json' -d '{"bidder":"alice","amount":50000}'
@@ -41,6 +41,10 @@ curl localhost:8080/listings/5/shipping     # one trace spanning two HTTP hops
 | Jaeger (traces) | http://localhost:16686 |
 | Prometheus (metrics) | http://localhost:9090 |
 | Grafana (dashboard "Listings API") | http://localhost:3000 (anonymous admin, local only) |
+
+The first start takes a little longer because PostgreSQL loads the seed data (about 400k rows). `--wait`
+blocks until the API's health check (`/healthz`) passes; without it, requests sent in the first seconds can
+fail with "connection reset". Check readiness any time with `docker compose ps` (the `api` should say `healthy`).
 
 Metrics are exported every 60 s by default, so wait about a minute before they appear in Prometheus.
 

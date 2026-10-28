@@ -28,6 +28,7 @@ Each entry: the decision, the reason, and the trade-off.
 * **No log backend.** Adding Loki would be breadth for little learning value; logs go to the Collector's stdout and this is stated as a limitation.
 * **Provisioned Grafana dashboard** (4 panels) so it works with zero clicking. Anonymous admin is acceptable only because it is local.
 * **Health checks on `api` and `postgres`, and `up --wait`.** The first run of the demo hit "connection reset" because requests arrived before the app was listening. The API check uses bash's `/dev/tcp` because the aspnet runtime image has no curl. The Postgres check uses `-h 127.0.0.1` on purpose: the default socket check passes during first-run initialisation, before the seed finishes and before TCP is open, which made the API start too early (found while testing this change; the first request returned 500).
+* **Dashboard HTTP panels hide `/healthz` and relabel unrouted requests.** The compose health check hits `/healthz` every 3 s, which would dominate the request-rate chart. Requests that match no endpoint (404, or 405 for a wrong method) carry no `http_route` label and showed up as an unnamed "Value" line, so they are relabelled "no route (404/405)" with `label_replace`. They are kept visible on purpose, since a spike there usually means broken clients or bad URLs.
 * **Pinned image tags** so the demo behaves the same next month.
 * **Schema and seed live in `db/` and run via Postgres' init directory** rather than app migrations: simple, and the integration test reuses the same schema file.
 

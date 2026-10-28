@@ -2,24 +2,101 @@
   "title": "Listings API (OpenTelemetry demo)",
   "uid": "listings-demo",
   "schemaVersion": 39,
-  "time": { "from": "now-15m", "to": "now" },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
   "refresh": "5s",
   "panels": [
-    { "id": 1, "type": "timeseries", "title": "HTTP requests/s by route",
-      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
-      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prom" },
-        "expr": "sum by (http_route) (rate(http_server_request_duration_seconds_count[1m]))", "legendFormat": "{{http_route}}" } ] },
-    { "id": 2, "type": "timeseries", "title": "HTTP p95 latency by route (s)",
-      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
-      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prom" },
-        "expr": "histogram_quantile(0.95, sum by (le, http_route) (rate(http_server_request_duration_seconds_bucket[1m])))", "legendFormat": "{{http_route}}" } ] },
-    { "id": 3, "type": "timeseries", "title": "Search p95 (ms) by strategy (custom histogram)",
-      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
-      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prom" },
-        "expr": "histogram_quantile(0.95, sum by (le, strategy) (rate(listings_search_duration_milliseconds_bucket[1m])))", "legendFormat": "{{strategy}}" } ] },
-    { "id": 4, "type": "timeseries", "title": "Accepted bids/s (custom counter)",
-      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
-      "targets": [ { "refId": "A", "datasource": { "type": "prometheus", "uid": "prom" },
-        "expr": "sum by (listing_category) (rate(listings_bids_placed_total[1m]))", "legendFormat": "{{listing_category}}" } ] }
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "HTTP requests/s by route",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
+          "expr": "label_replace(sum by (http_route) (rate(http_server_request_duration_seconds_count{http_route!=\"/healthz\"}[1m])), \"http_route\", \"no route (404/405)\", \"http_route\", \"^$\")",
+          "legendFormat": "{{http_route}}"
+        }
+      ],
+      "description": "Excludes the /healthz probe. \"no route (404/405)\" = requests that matched no endpoint, e.g. an unknown URL or the wrong HTTP method."
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "HTTP p95 latency by route (s)",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
+          "expr": "label_replace(histogram_quantile(0.95, sum by (le, http_route) (rate(http_server_request_duration_seconds_bucket{http_route!=\"/healthz\"}[1m]))), \"http_route\", \"no route (404/405)\", \"http_route\", \"^$\")",
+          "legendFormat": "{{http_route}}"
+        }
+      ],
+      "description": "Excludes the /healthz probe. \"no route (404/405)\" = requests that matched no endpoint, e.g. an unknown URL or the wrong HTTP method."
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Search p95 (ms) by strategy (custom histogram)",
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
+          "expr": "histogram_quantile(0.95, sum by (le, strategy) (rate(listings_search_duration_milliseconds_bucket[1m])))",
+          "legendFormat": "{{strategy}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Accepted bids/s (custom counter)",
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prom"
+          },
+          "expr": "sum by (listing_category) (rate(listings_bids_placed_total[1m]))",
+          "legendFormat": "{{listing_category}}"
+        }
+      ]
+    }
   ]
 }

@@ -119,10 +119,6 @@ scripts/bench.sh    timing helper
 * Not run on Kubernetes or AWS. Nothing here covers deployment, the Collector as a DaemonSet/sidecar, or the OpenTelemetry Operator.
 * Single service, so "distributed" tracing is only shown by the service calling itself over HTTP.
 * The `db.statement` attribute stores SQL text (parameters excluded). Real systems must think about sensitive data in telemetry.
-* The `Dockerfile` could not be built in the sandbox where this was authored (no route to NuGet from inside
-  the build container); the stack there was run with a host-published build instead. Please run
-  `docker compose up --build` once on your own machine to confirm. Likewise the GitHub Actions workflow
-  has not been executed yet (the same commands run locally and pass).
 * Benchmark numbers are single-machine, single-run, synthetic data.
 
 ## License
